@@ -1,6 +1,10 @@
+readdata <- function(directoryname, id) {
+    filename <- sprintf("%s%03d.csv", directoryname, id)
+    read.csv(filename)
+}
+
 getpollutantvalues <- function(directoryname, pollutantname, oneid) {
-    filename <- sprintf("%s%03d.csv", directoryname, oneid)
-    alldata <- read.csv(filename)
+    alldata <- readdata(directoryname, oneid)
     pollutantidallvalues <- alldata[, pollutantname]
     pollutantbadvalues <- is.na(pollutantidallvalues)
     pollutantidgoodvalues <- pollutantidallvalues[!pollutantbadvalues]
@@ -8,14 +12,18 @@ getpollutantvalues <- function(directoryname, pollutantname, oneid) {
 }
 
 pollutantmean <- function(directory, pollutant, id = 1:332) {
-    pollutantname <- pollutant[1]
-    directoryname <- directory[1]
     pollutantvalues = c();  
     
     for (oneid in id) {
-        pollutantidgoodvalues <- getpollutantvalues(directoryname, pollutantname, oneid)
+        pollutantidgoodvalues <- getpollutantvalues(directory, pollutant, oneid)
         pollutantvalues = append(pollutantvalues, pollutantidgoodvalues)
     }
     
-    pollutantvalues
+    mean(pollutantvalues)
+}
+
+callit <- function(ids) {
+    print(pollutantmean("/Users/heldergeraldoribeiro/Documents/Data-Science/specdata/", "sulfate", 1:10))
+    print(pollutantmean("/Users/heldergeraldoribeiro/Documents/Data-Science/specdata/", "nitrate", 70:72))
+    print(pollutantmean("/Users/heldergeraldoribeiro/Documents/Data-Science/specdata/", "nitrate", 23))
 }
